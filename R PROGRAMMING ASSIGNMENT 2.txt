@@ -1,0 +1,47 @@
+makeCacheMatrix <- function(x = matrix()) {
+      m <- NULL
+      set <- function(y) {
+            x <<- y
+            m <<- NULL
+      }
+      get <- function() x
+      setinverse <- function(solve) m <<- solve
+      getinverse <- function() m
+      list(set = set, get = get,
+           setinverse = setinverse,
+           getinverse = getinverse)
+}
+
+
+
+cacheSolve <- function(x, ...) {
+      m <- x$getinverse()
+      if(!is.null(m)) {
+            message("getting cached data")
+            return(m)
+      }
+      data <- x$get()
+      m <- solve(data, ...)
+      x$setinverse(m)
+      m
+}
+
+
+
+TEST MATRIX 
+a <- diag(2,3)
+a
+
+CachedMatrix <- makeCacheMatrix(a)
+cacheSolve(CachedMatrix)
+
+b <- diag(5,6)
+b
+
+CachedMatrix <- makeCacheMatrix(b)
+cacheSolve(CachedMatrix)
+
+
+x = rbind(c(2, -1/5), c(-1/5, 2))
+m = makeCacheMatrix(x)
+m$get()
